@@ -8,7 +8,7 @@ A lightweight, production-ready Customer Support CRM built with FastAPI, SQLite,
 ![Tailwind](https://img.shields.io/badge/UI-Tailwind_CSS-38B2AC.svg)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-> 🚀 Live Demo: [your-app-name.onrender.com](https://your-app-name.onrender.com)
+> 🚀 Live Demo: https://crm-5386.onrender.com
 
 ---
 
