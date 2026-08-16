@@ -1,0 +1,55 @@
+// Extract ID from URL (e.g. /ticket/TKT-001 -> "TKT-001")
+const ticketId = window.location.pathname.split('/').pop();
+
+// Load details on page load
+async function loadTicket() {
+  try {
+    const response = await fetch(`/api/tickets/${ticketId}`);
+    if (!response.ok) {
+      alert("Ticket not found!");
+      window.location.href = '/';
+      return;
+    }
+    const ticket = await response.json();
+    
+    if (document.getElementById('ticketSubject')) document.getElementById('ticketSubject').innerText = ticket.subject;
+    if (document.getElementById('ticketDescription')) document.getElementById('ticketDescription').innerText = ticket.description;
+    if (document.getElementById('customerName')) document.getElementById('customerName').innerText = ticket.customer_name;
+    if (document.getElementById('customerEmail')) document.getElementById('customerEmail').innerText = ticket.customer_email;
+    if (document.getElementById('statusSelect')) document.getElementById('statusSelect').value = ticket.status;
+
+    // Render Notes Timeline
+    const notesContainer = document.getElementById('notesTimeline');
+    if (notesContainer && ticket.notes) {
+      notesContainer.innerHTML = ticket.notes.map(n => `
+        <div class="p-3 bg-gray-50 rounded-xl border border-gray-100 text-xs text-gray-700">
+          <p class="font-semibold">${n.note_text}</p>
+          <span class="text-gray-400 text-[10px]">${new Date(n.created_at).toLocaleString()}</span>
+        </div>
+      `).join('');
+    }
+  } catch (err) {
+    console.error("Error loading ticket:", err);
+  }
+}
+
+// Update Status or Add Note on button click
+async function updateStatusAndNotes() {
+  const newStatus = document.getElementById('statusSelect') ? document.getElementById('statusSelect').value : null;
+  const noteText = document.getElementById('noteInput') ? document.getElementById('noteInput').value : null;
+
+  const response = await fetch(`/api/tickets/${ticketId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: newStatus, note_text: noteText })
+  });
+
+  if (response.ok) {
+    alert("Ticket updated successfully!");
+    if (document.getElementById('noteInput')) document.getElementById('noteInput').value = '';
+    loadTicket(); // Refresh UI
+  }
+}
+
+// Trigger load automatically
+document.addEventListener('DOMContentLoaded', loadTicket);
