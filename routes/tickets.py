@@ -1,4 +1,4 @@
-# routes/tickets.py
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
@@ -11,9 +11,9 @@ import models
 
 router = APIRouter(prefix="/api/tickets", tags=["Tickets"])
 
-# -------------------------------------------------------------------
-# HELPER: AUTO TRIAGE LOGIC
-# -------------------------------------------------------------------
+
+
+
 def auto_triage(description: str, subject: str):
     text = (description + " " + subject).lower()
     
@@ -50,9 +50,9 @@ def auto_triage(description: str, subject: str):
         "auto_tagged": True
     }
 
-# -------------------------------------------------------------------
-# PYDANTIC SCHEMAS
-# -------------------------------------------------------------------
+
+
+
 class TicketCreate(BaseModel):
     customer_name: str
     customer_email: EmailStr
@@ -93,15 +93,15 @@ def generate_ticket_id(db: Session) -> str:
     count = db.query(models.Ticket).count()
     return f"TKT-{count + 1:03d}"
 
-# -------------------------------------------------------------------
-# API ENDPOINTS
-# -------------------------------------------------------------------
+
+
+
 
 @router.post("", status_code=201)
 def create_ticket(ticket_data: TicketCreate, db: Session = Depends(database.get_db)):
     new_ticket_id = generate_ticket_id(db)
     
-    # Run auto-triage step
+
     triage = auto_triage(ticket_data.description, ticket_data.subject)
     
     db_ticket = models.Ticket(

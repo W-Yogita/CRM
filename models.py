@@ -1,4 +1,4 @@
-# models.py
+
 from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
@@ -16,7 +16,7 @@ class Ticket(Base):
     description = Column(Text, nullable=False)
     status = Column(String, default="Open")
     
-    # NEW TRIAGE FIELDS
+
     urgency = Column(String, default="Normal")
     priority = Column(Integer, default=3)
     category = Column(String, default="General")
